@@ -25,10 +25,22 @@ class User
      * @param array $userDetails
      * @return void
      */
-    public function __construct(string $email, array $userDetails)
+    public function __construct(string $email, array $userDetails = [])
     {
+        if (filter_var($email, FILTER_VALIDATE_EMAIL) === true) {
+            throw new \InvalidArgumentException('Wrong email provided.');
+        }
+
+        if (is_null($email) || empty($email) || $email === '') {
+            throw new \InvalidArgumentException('No email provided.');
+        }
+
         $user = DB::table($this->tableName)->where('_email', $email)->first();
         if (is_null($user) || empty($user)) {
+            if (is_null($userDetails) || empty($userDetails)) {
+                throw new \InvalidArgumentException('No user details provided');
+            }
+
             $this->email = $email;
             $this->password = password_hash($userDetails['password'], PASSWORD_BCRYPT);
             $this->country = $userDetails['country'];

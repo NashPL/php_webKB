@@ -15,7 +15,7 @@ class UserTest extends TestCase
     {
         parent::setUp();
         $this->newUser = [];
-        $this->newUser['email'] = 'newtest@test.php';
+        $this->newUser['email'] = 'newtest@test.com';
         $this->newUser['password'] = '123';
         $this->newUser['country'] = 'UK';
 
@@ -45,4 +45,23 @@ class UserTest extends TestCase
         $this->assertTrue(!is_null($id));
         $this->assertTrue(is_integer($id));
     }
+
+    public function testInitalizeClassWrongEmailString()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        new User('this is a wrong email');
+    }
+
+    public function testInitalizeClassEmptyStringProvided()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        new User('');
+    }
+
+    public function testInitalizeClassProvideNumberAsAEmail()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        new User(12345);
+    }
+
 }
